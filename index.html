@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendaftaran Perayaan Hari Pahlawan 2026 - SDN Duri Pulo 04</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .hero-pattern {
+            background-color: #7f1d1d;
+            background-image: radial-gradient(#b91c1c 1px, transparent 1px), radial-gradient(#b91c1c 1px, #7f1d1d 1px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col justify-between">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div>
+                    <h1 class="font-extrabold text-red-700 text-lg sm:text-xl tracking-tight leading-tight">SDN DURI PULO 04</h1>
+                    <p class="text-xs text-slate-500 font-medium tracking-wide">#SATU SEKOLAH #SATU KEKUATAN #SATU MASA DEPAN</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="openConfigModal()" class="flex items-center gap-1.5 text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-full border border-emerald-200 transition-all">
+                    <i class="fa-solid fa-file-excel text-emerald-600"></i> Integrasi Google Sheet
+                    <span id="gsStatusBadge" class="w-2 h-2 rounded-full bg-slate-400"></span>
+                </button>
+                <div class="hidden md:flex items-center gap-2 text-xs font-semibold bg-red-50 text-red-700 px-3 py-1.5 rounded-full border border-red-200">
+                    <i class="fa-solid fa-calendar-day"></i> 10 November 2026
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Banner Hero -->
+    <section class="hero-pattern text-white py-10 px-4 relative overflow-hidden shadow-inner">
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <span class="inline-block bg-amber-400 text-red-950 text-xs font-extrabold uppercase px-3 py-1 rounded-full mb-3 shadow">
+                <i class="fa-solid fa-flag text-red-700 mr-1"></i> Perayaan Hari Pahlawan 2026
+            </span>
+            <h2 class="text-2xl sm:text-4xl font-extrabold mb-2 tracking-tight">Formulir Pendaftaran Lomba Siswa</h2>
+            <p class="text-red-100 text-sm sm:text-base max-w-2xl mx-auto font-normal">
+                Gelarkan semangat pahlawanmu! Daftarkan dirimu dalam ajang Fashion Show Baju Pahlawan & Membaca Puisi Kemerdekaan SDN Duri Pulo 04.
+            </p>
+        </div>
+        <div class="absolute -bottom-6 -right-6 opacity-10 text-white text-9xl">
+            <i class="fa-solid fa-award"></i>
+        </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <main class="max-w-5xl mx-auto px-4 py-8 w-full flex-grow">
+        
+        <!-- Tab Navigation -->
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div class="flex bg-slate-200 p-1 rounded-xl text-xs sm:text-sm font-semibold">
+                <button id="btnTabForm" onclick="switchTab('form')" class="px-4 py-2 rounded-lg bg-white text-red-700 shadow-sm transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square"></i> Isi Formulir
+                </button>
+                <button id="btnTabData" onclick="switchTab('data')" class="px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-table-list"></i> Data Pendaftar (<span id="countBadge">0</span>)
+                </button>
+            </div>
+        </div>
+
+        <!-- Section 1: Formulir Pendaftaran -->
+        <div id="tabForm" class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+            <div class="bg-gradient-to-r from-red-700 to-amber-600 px-6 py-4 text-white flex justify-between items-center">
+                <h3 class="font-bold text-base sm:text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-user"></i> Biodata & Pilihan Lomba
+                </h3>
+                <span class="text-xs bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-md font-medium">Kelas 1 - 6</span>
+            </div>
+
+            <form id="registrationForm" onsubmit="handleFormSubmit(event)" class="p-6 space-y-6">
+                <!-- Input Nama Lengkap -->
+                <div>
+                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">
+                        Nama Lengkap Siswa <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <input type="text" id="namaLengkap" required placeholder="Contoh: Ahmad Rizky" 
+                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all outline-none">
+                    </div>
+                </div>
+
+                <!-- Row Kelas & Jenis Kelamin -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">
+                            Kelas <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-school"></i>
+                            </div>
+                            <input type="text" id="kelas" required placeholder="Contoh: 1A, 3B, atau Kelas 5" 
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all outline-none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">
+                            Jenis Kelamin <span class="text-red-500">*</span>
+                        </label>
+                        <div class="flex gap-4 pt-1">
+                            <label class="flex items-center gap-2 cursor-pointer bg-slate-50 border border-slate-300 rounded-xl px-4 py-2 flex-1 hover:bg-slate-100 transition-all">
+                                <input type="radio" name="jenisKelamin" value="Laki-laki" required class="text-red-600 focus:ring-red-500">
+                                <span class="text-sm font-medium text-slate-700">Laki-laki</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer bg-slate-50 border border-slate-300 rounded-xl px-4 py-2 flex-1 hover:bg-slate-100 transition-all">
+                                <input type="radio" name="jenisKelamin" value="Perempuan" required class="text-red-600 focus:ring-red-500">
+                                <span class="text-sm font-medium text-slate-700">Perempuan</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kategori Lomba (Radio Cards) -->
+                <div>
+                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
+                        Pilihan Kategori Lomba <span class="text-red-500">*</span>
+                    </label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Card 1: Fashion Show -->
+                        <label class="relative flex flex-col p-4 border-2 border-slate-200 rounded-2xl cursor-pointer hover:border-red-400 hover:bg-red-50/40 transition-all select-none group has-[:checked]:border-red-600 has-[:checked]:bg-red-50/80">
+                            <input type="radio" name="kategoriLomba" value="Fashion Show (Kelas 1-6)" required class="sr-only" onchange="updateSubFields()">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg group-hover:scale-105 transition-transform">
+                                        <i class="fa-solid fa-shirt"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-800 text-sm">1. Fashion Show Pahlawan</h4>
+                                        <p class="text-xs text-slate-500">Terbuka untuk Kelas 1 s/d 6</p>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-circle-check text-slate-300 text-xl group-has-[:checked]:text-red-600"></i>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-1">Peragaan busana bernuansa Pahlawan Nasional atau Adat Nusantara.</p>
+                        </label>
+
+                        <!-- Card 2: Membaca Puisi -->
+                        <label class="relative flex flex-col p-4 border-2 border-slate-200 rounded-2xl cursor-pointer hover:border-red-400 hover:bg-red-50/40 transition-all select-none group has-[:checked]:border-red-600 has-[:checked]:bg-red-50/80">
+                            <input type="radio" name="kategoriLomba" value="Membaca Puisi (Kelas 1-6)" required class="sr-only" onchange="updateSubFields()">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-red-100 text-red-700 flex items-center justify-center font-bold text-lg group-hover:scale-105 transition-transform">
+                                        <i class="fa-solid fa-book-open"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-800 text-sm">2. Membaca Puisi</h4>
+                                        <p class="text-xs text-slate-500">Terbuka untuk Kelas 1 s/d 6</p>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-circle-check text-slate-300 text-xl group-has-[:checked]:text-red-600"></i>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-1">Pembacaan teks/puisi bertema Perjuangan & Cinta Tanah Air.</p>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Field Dinamis Tergantung Lomba -->
+                <div id="dynamicSubField" class="hidden p-4 bg-amber-50/70 border border-amber-200 rounded-xl">
+                    <label id="subFieldLabel" class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">
+                        Keterangan Lomba
+                    </label>
+                    <input type="text" id="subFieldValue" placeholder="Masukkan detail..." 
+                        class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none">
+                </div>
+
+                <!-- No WhatsApp & Catatan -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">
+                            No. WhatsApp Orang Tua / Wali <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </div>
+                            <input type="tel" id="noWhatsapp" required placeholder="08xxxxxxxxxx" 
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all outline-none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">
+                            Catatan Khusus (Opsional)
+                        </label>
+                        <input type="text" id="catatan" placeholder="Kebutuhan khusus atau keterangan tambahan" 
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all outline-none">
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row justify-end gap-3">
+                    <button type="reset" class="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-xl transition-all">
+                        Reset Form
+                    </button>
+                    <button type="submit" id="btnSubmit" class="px-8 py-2.5 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-bold text-sm rounded-xl shadow-lg hover:shadow-red-900/30 transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> Kirim Pendaftaran
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Section 2: Data Pendaftar Tabel -->
+        <div id="tabData" class="hidden bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+            <div class="bg-slate-800 px-6 py-4 text-white flex flex-wrap justify-between items-center gap-3">
+                <h3 class="font-bold text-base sm:text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-users"></i> Daftar Peserta Terdaftar
+                </h3>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportToCSV()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-file-csv"></i> Unduh CSV
+                    </button>
+                    <button onclick="clearAllData()" class="px-3 py-1.5 bg-red-600/30 hover:bg-red-600 text-red-200 hover:text-white font-bold text-xs rounded-lg transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-trash"></i> Bersihkan
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs sm:text-sm">
+                    <thead class="bg-slate-100 text-slate-700 uppercase font-bold border-b border-slate-200">
+                        <tr>
+                            <th class="py-3 px-4">#</th>
+                            <th class="py-3 px-4">Waktu</th>
+                            <th class="py-3 px-4">Nama Siswa</th>
+                            <th class="py-3 px-4">Kelas</th>
+                            <th class="py-3 px-4">Kategori Lomba</th>
+                            <th class="py-3 px-4">Detail / Judul</th>
+                            <th class="py-3 px-4">No. WA Wali</th>
+                            <th class="py-3 px-4 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendaftarTableBody" class="divide-y divide-slate-100">
+                        <!-- Render via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="p-12 text-center text-slate-400">
+                <i class="fa-solid fa-folder-open text-5xl mb-3 text-slate-300"></i>
+                <p class="font-semibold text-slate-600 text-sm">Belum ada peserta yang mendaftar</p>
+                <p class="text-xs text-slate-400 mt-1">Silakan isi formulir pendaftaran untuk menambahkan peserta.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Integrasi Google Spreadsheet -->
+    <div id="modalGSConfig" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b pb-3 mb-4">
+                <div class="flex items-center gap-2 text-emerald-700 font-bold text-base">
+                    <i class="fa-solid fa-file-excel text-xl"></i> Sambungkan ke Google Spreadsheet
+                </div>
+                <button onclick="closeConfigModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-600 mb-4 leading-relaxed">
+                Masukkan URL Web App dari **Google Apps Script** agar setiap data formulir yang diisi oleh peserta otomatis terkirim langsung ke Spreadsheet milik Anda secara *real-time*.
+            </p>
+
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-slate-700 mb-1">URL Google Apps Script (Web App URL)</label>
+                <input type="url" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/AKfycb.../exec" 
+                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+            </div>
+
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4 text-xs text-slate-700 space-y-2">
+                <p class="font-bold text-amber-900 flex items-center gap-1.5">
+                    <i class="fa-solid fa-lightbulb"></i> Cara Membuat Kode Google Apps Script (3 Menit):
+                </p>
+                <ol class="list-decimal pl-4 space-y-1">
+                    <li>Buka <a href="https://sheets.new" target="_blank" class="text-blue-600 underline font-medium">Google Sheets baru</a>.</li>
+                    <li>Klik menu <b>Ekstensi</b> &rarr; <b>Apps Script</b>.</li>
+                    <li>Hapus semua kode lama, lalu tempel (paste) kode di bawah ini:</li>
+                </ol>
+                <div class="relative bg-slate-800 text-slate-100 p-3 rounded-lg font-mono text-[10px] overflow-x-auto my-2">
+                    <button onclick="copyAppsScriptCode()" class="absolute top-2 right-2 bg-white/20 hover:bg-white/30 text-white px-2 py-1 rounded text-[10px]">
+                        <i class="fa-solid fa-copy"></i> Salin Kode
+                    </button>
+                    <pre id="appsScriptCodeText">
+function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = e.parameter;
+  
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(["Tanggal/Waktu", "Nama Siswa", "Kelas", "Jenis Kelamin", "Kategori Lomba", "Detail Lomba", "No WhatsApp Wali", "Catatan"]);
+  }
+  
+  sheet.appendRow([
+    data.timestamp || new Date(),
+    data.namaLengkap,
+    data.kelas,
+    data.jenisKelamin,
+    data.kategoriLomba,
+    data.subDetail,
+    "'" + data.noWhatsapp,
+    data.catatan
+  ]);
+  
+  return ContentService.createTextOutput(JSON.stringify({ "result": "success" }))
+    .setMimeType(ContentService.MimeType.JSON);
+}</pre>
+                </div>
+                <ol start="4" class="list-decimal pl-4 space-y-1">
+                    <li>Klik <b>Terapkan (Deploy)</b> &rarr; <b>Penerapan Baru (New Deployment)</b>.</li>
+                    <li>Pilih Jenis: <b>Aplikasi Web (Web App)</b>.</li>
+                    <li>Pada *Siapa yang memiliki akses (Who has access)*, pilih **Siapa saja (Anyone)**.</li>
+                    <li>Klik **Terapkan (Deploy)**, berikan izin akses, lalu salin **URL Aplikasi Web** dan tempel pada kolom di atas!</li>
+                </ol>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeConfigModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg">Batal</button>
+                <button onclick="saveGSConfig()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-sm">Simpan URL Integrasi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Notifikasi / Status -->
+    <div id="modalAlert" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl border border-slate-100 animate-fade-in">
+            <div id="modalIcon" class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h3 id="modalTitle" class="text-lg font-bold text-slate-800 mb-1">Pendaftaran Berhasil!</h3>
+            <p id="modalMessage" class="text-xs text-slate-600 mb-6">Data peserta telah tersimpan dalam sistem.</p>
+            <button onclick="closeModalAlert()" class="w-full py-2.5 bg-red-700 hover:bg-red-800 text-white font-bold rounded-xl text-xs transition-all shadow-md">
+                Tutup / Kembali
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 mt-12">
+        <div class="max-w-4xl mx-auto px-4">
+            <p class="font-bold text-slate-700">Panitia Perayaan Hari Pahlawan 10 November 2026</p>
+            <p class="mt-1">SDN Duri Pulo 04 &copy; 2026. #SATU SEKOLAH #SATU KEKUATAN #SATU MASA DEPAN.</p>
+        </div>
+    </footer>
+
+    <!-- Script Application Logic -->
+    <script>
+        // State Management In-Memory / LocalStorage
+        let pendaftarList = [];
+        let googleScriptUrl = localStorage.getItem('sdn_dp04_gs_url') || '';
+
+        window.onload = function() {
+            // Load local data
+            const savedData = localStorage.getItem('sdn_dp04_pendaftar');
+            if (savedData) {
+                try {
+                    pendaftarList = JSON.parse(savedData);
+                } catch(e) {
+                    pendaftarList = [];
+                }
+            }
+            updateGSStatusBadge();
+            renderTable();
+        };
+
+        // Integration Config Modal
+        function openConfigModal() {
+            document.getElementById('scriptUrlInput').value = googleScriptUrl;
+            document.getElementById('modalGSConfig').classList.remove('hidden');
+        }
+
+        function closeConfigModal() {
+            document.getElementById('modalGSConfig').classList.add('hidden');
+        }
+
+        function saveGSConfig() {
+            const url = document.getElementById('scriptUrlInput').value.trim();
+            googleScriptUrl = url;
+            localStorage.setItem('sdn_dp04_gs_url', url);
+            updateGSStatusBadge();
+            closeConfigModal();
+            showModalAlert("Integrasi Disimpan", googleScriptUrl ? "URL Google Apps Script berhasil dihubungkan! Pendaftaran baru akan otomatis dikirim ke Spreadsheet." : "URL Integrasi dikosongkan.");
+        }
+
+        function updateGSStatusBadge() {
+            const badge = document.getElementById('gsStatusBadge');
+            if (badge) {
+                if (googleScriptUrl) {
+                    badge.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+                } else {
+                    badge.className = "w-2 h-2 rounded-full bg-amber-400";
+                }
+            }
+        }
+
+        function copyAppsScriptCode() {
+            const codeText = document.getElementById('appsScriptCodeText').innerText;
+            const tempInput = document.createElement("textarea");
+            tempInput.value = codeText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            alert("Kode Google Apps Script berhasil disalin!");
+        }
+
+        // Switch Tab UI
+        function switchTab(tab) {
+            const tabForm = document.getElementById('tabForm');
+            const tabData = document.getElementById('tabData');
+            const btnForm = document.getElementById('btnTabForm');
+            const btnData = document.getElementById('btnTabData');
+
+            if (tab === 'form') {
+                tabForm.classList.remove('hidden');
+                tabData.classList.add('hidden');
+                btnForm.className = "px-4 py-2 rounded-lg bg-white text-red-700 shadow-sm transition-all flex items-center gap-2 font-semibold";
+                btnData.className = "px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center gap-2";
+            } else {
+                tabForm.classList.add('hidden');
+                tabData.classList.remove('hidden');
+                btnData.className = "px-4 py-2 rounded-lg bg-white text-red-700 shadow-sm transition-all flex items-center gap-2 font-semibold";
+                btnForm.className = "px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center gap-2";
+            }
+        }
+
+        // Handle dynamic fields based on selection
+        function updateSubFields() {
+            const selectedKategori = document.querySelector('input[name="kategoriLomba"]:checked')?.value;
+            const subContainer = document.getElementById('dynamicSubField');
+            const subLabel = document.getElementById('subFieldLabel');
+            const subInput = document.getElementById('subFieldValue');
+
+            if (!selectedKategori) {
+                subContainer.classList.add('hidden');
+                return;
+            }
+
+            subContainer.classList.remove('hidden');
+            if (selectedKategori.includes('Fashion Show')) {
+                subLabel.innerText = 'Tema / Tokoh Pahlawan Kostum yang Diperagakan:';
+                subInput.placeholder = 'Contoh: Ir. Soekarno / Cut Nyak Dhien / Baju Adat Jawa';
+            } else if (selectedKategori.includes('Puisi')) {
+                subLabel.innerText = 'Judul Puisi yang Akan Dibawakan:';
+                subInput.placeholder = 'Contoh: Karawang-Bekasi / Pahlawan Tak Dikenal';
+            }
+        }
+
+        // Form Submission
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const btnSubmit = document.getElementById('btnSubmit');
+            const originalBtnHtml = btnSubmit.innerHTML;
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Memproses & Mengirim...`;
+
+            const namaLengkap = document.getElementById('namaLengkap').value.trim();
+            const kelas = document.getElementById('kelas').value;
+            const jenisKelamin = document.querySelector('input[name="jenisKelamin"]:checked')?.value;
+            const kategoriLomba = document.querySelector('input[name="kategoriLomba"]:checked')?.value;
+            const subDetail = document.getElementById('subFieldValue').value.trim();
+            const noWhatsapp = document.getElementById('noWhatsapp').value.trim();
+            const catatan = document.getElementById('catatan').value.trim();
+
+            const timestamp = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+
+            const newEntry = {
+                id: Date.now(),
+                timestamp,
+                namaLengkap,
+                kelas,
+                jenisKelamin,
+                kategoriLomba,
+                subDetail: subDetail || '-',
+                noWhatsapp,
+                catatan: catatan || '-'
+            };
+
+            // 1. Save locally
+            pendaftarList.unshift(newEntry);
+            localStorage.setItem('sdn_dp04_pendaftar', JSON.stringify(pendaftarList));
+            renderTable();
+
+            // 2. Kirim otomatis ke Google Spreadsheet jika URL dikonfigurasi
+            let sentToGoogle = false;
+            if (googleScriptUrl) {
+                try {
+                    const formData = new URLSearchParams();
+                    formData.append('timestamp', newEntry.timestamp);
+                    formData.append('namaLengkap', newEntry.namaLengkap);
+                    formData.append('kelas', newEntry.kelas);
+                    formData.append('jenisKelamin', newEntry.jenisKelamin);
+                    formData.append('kategoriLomba', newEntry.kategoriLomba);
+                    formData.append('subDetail', newEntry.subDetail);
+                    formData.append('noWhatsapp', newEntry.noWhatsapp);
+                    formData.append('catatan', newEntry.catatan);
+
+                    await fetch(googleScriptUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: formData.toString()
+                    });
+                    sentToGoogle = true;
+                } catch (err) {
+                    console.error("Gagal mengirim ke Google Spreadsheet:", err);
+                }
+            }
+
+            // Reset form
+            document.getElementById('registrationForm').reset();
+            document.getElementById('dynamicSubField').classList.add('hidden');
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = originalBtnHtml;
+
+            // Show Feedback Modal
+            const msgInfo = sentToGoogle 
+                ? `Data pendaftaran atas nama ${namaLengkap} (${kelas}) berhasil tersimpan dan otomatis terkirim ke Google Spreadsheet!`
+                : `Data pendaftaran atas nama ${namaLengkap} (${kelas}) berhasil tersimpan di sistem lokal. (Tips: Klik 'Integrasi Google Sheet' di bagian kanan atas jika ingin otomatis terkirim ke Google Spreadsheet)`;
+
+            showModalAlert("Pendaftaran Berhasil!", msgInfo);
+        }
+
+        // Render Table Data
+        function renderTable() {
+            const tbody = document.getElementById('pendaftarTableBody');
+            const emptyState = document.getElementById('emptyState');
+            const countBadge = document.getElementById('countBadge');
+
+            if (countBadge) {
+                countBadge.innerText = pendaftarList.length;
+            }
+
+            if (!tbody) return;
+
+            if (pendaftarList.length === 0) {
+                tbody.innerHTML = '';
+                if (emptyState) emptyState.classList.remove('hidden');
+                return;
+            }
+
+            if (emptyState) emptyState.classList.add('hidden');
+            tbody.innerHTML = pendaftarList.map((item, idx) => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-4 font-bold text-slate-500">${idx + 1}</td>
+                    <td class="py-3 px-4 text-xs text-slate-400 whitespace-nowrap">${item.timestamp}</td>
+                    <td class="py-3 px-4 font-semibold text-slate-800">${escapeHtml(item.namaLengkap)}</td>
+                    <td class="py-3 px-4"><span class="bg-slate-100 text-slate-700 font-medium px-2 py-0.5 rounded border border-slate-200">${escapeHtml(item.kelas)}</span></td>
+                    <td class="py-3 px-4">
+                        <span class="inline-block px-2.5 py-1 rounded-full text-xs font-bold ${item.kategoriLomba.includes('Fashion') ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'}">
+                            ${escapeHtml(item.kategoriLomba)}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 italic text-slate-600">${escapeHtml(item.subDetail)}</td>
+                    <td class="py-3 px-4 text-slate-700 font-mono">${escapeHtml(item.noWhatsapp)}</td>
+                    <td class="py-3 px-4 text-center">
+                        <button onclick="deleteEntry(${item.id})" class="text-red-500 hover:text-red-700 p-1 rounded transition-colors" title="Hapus">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteEntry(id) {
+            pendaftarList = pendaftarList.filter(item => item.id !== id);
+            localStorage.setItem('sdn_dp04_pendaftar', JSON.stringify(pendaftarList));
+            renderTable();
+        }
+
+        function clearAllData() {
+            if (pendaftarList.length === 0) return;
+            if (window.confirm("Apakah Anda yakin ingin menghapus semua data pendaftar?")) {
+                pendaftarList = [];
+                localStorage.setItem('sdn_dp04_pendaftar', JSON.stringify(pendaftarList));
+                renderTable();
+            }
+        }
+
+        // CSV Export
+        function exportToCSV() {
+            if (pendaftarList.length === 0) {
+                showModalAlert("Data Kosong", "Belum ada pendaftar untuk diunduh.");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "No,Waktu,Nama Siswa,Kelas,Jenis Kelamin,Kategori Lomba,Detail Lomba,No WhatsApp Wali,Catatan\n";
+
+            pendaftarList.forEach((item, index) => {
+                const row = [
+                    index + 1,
+                    `"${item.timestamp}"`,
+                    `"${item.namaLengkap}"`,
+                    `"${item.kelas}"`,
+                    `"${item.jenisKelamin}"`,
+                    `"${item.kategoriLomba}"`,
+                    `"${item.subDetail}"`,
+                    `"'${item.noWhatsapp}"`,
+                    `"${item.catatan}"`
+                ].join(",");
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Pendaftar_Hari_Pahlawan_SDN_DP04_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Modal Helpers
+        function showModalAlert(title, message) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('modalAlert').classList.remove('hidden');
+        }
+
+        function closeModalAlert() {
+            document.getElementById('modalAlert').classList.add('hidden');
+        }
+
+        function escapeHtml(str) {
+            return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+</html>
